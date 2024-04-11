@@ -123,7 +123,38 @@ section {
 		width: 100%;
 	}
 }
+.alert {
+	max-width: 700px;
+	width: 100%;
+	margin: 0 auto;
+	position: fixed;
+	z-index: 999999;
+	left: 0;
+	top: 70px;
+	right: 0;
+	display: none;
+}
 
+.loader {
+	margin-top: 40px;
+	display: none;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	border-top: 3px solid #929292;
+	border-right: 3px solid transparent;
+	box-sizing: border-box;
+	animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
 .container {
 	.taxanomy {
 		display: flex;

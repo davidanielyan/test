@@ -206,88 +206,11 @@ if ($city) {
 
 
 
-//
-// function enqueue_custom_scripts() {
-    
-//     wp_enqueue_script('custom-script', get_stylesheet_directory_uri() . "/dist/js/custom.js", array('jquery'), '1.0', true);
-    
-    
-//     wp_localize_script('custom-script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
-// }
-// add_action('wp_enqueue_scripts', 'enqueue_custom_scripts');
-
-
-// add_action('wp_ajax_add_property', 'add_property_callback');
-// add_action('wp_ajax_nopriv_add_property', 'add_property_callback');
-
-// function add_property_callback() {
-//     parse_str($_POST['formData'], $formData); 
-
-    
-//     $property_data = array(
-//         'post_title'   => sanitize_text_field($formData['post_title']),
-//         'post_type'    => 'property', 
-//         'post_status'  => 'publish'
-//     );
-
-    
-//     $property_id = wp_insert_post($property_data);
-
-    
-//     if ($property_id) {
-//         // Handle featured image upload
-//         if (isset($_FILES['featured_image']) && $_FILES['featured_image']['error'] === UPLOAD_ERR_OK) {
-//             $file_name = $_FILES['featured_image']['name'];
-//             $file_tmp = $_FILES['featured_image']['tmp_name'];
-
-//             // Upload the file to the WordPress media library
-//             $upload = wp_upload_bits($file_name, null, file_get_contents($file_tmp));
-//             if (!$upload['error']) {
-//                 $file_path = $upload['file'];
-
-//                 // Prepare attachment data
-//                 $attachment = array(
-//                     'post_mime_type' => $upload['type'],
-//                     'post_parent' => 0,
-//                     'post_title' => preg_replace('/\.[^.]+$/', '', $file_name),
-//                     'post_content' => '',
-//                     'post_status' => 'inherit'
-//                 );
-
-//                 // Insert the attachment into the WordPress media library
-//                 $attachment_id = wp_insert_attachment($attachment, $file_path);
-
-//                 // Set the featured image for the property post
-//                 if (!is_wp_error($attachment_id)) {
-//                     set_post_thumbnail($property_id, $attachment_id);
-//                 }
-//             }
-//         }
-
-//         // Update ACF fields
-//         update_field('ploshad', sanitize_text_field($formData['ploshad']), $property_id);
-//         update_field('stoimst', sanitize_text_field($formData['stoimst']), $property_id);
-//         update_field('adress', sanitize_text_field($formData['adress']), $property_id);
-//         update_field('jilaya_ploshad', sanitize_text_field($formData['jilaya_ploshad']), $property_id);
-//         update_field('etaj', sanitize_text_field($formData['etaj']), $property_id);
-        
-//         // Save selected city
-//         update_post_meta($property_id, 'property_city', intval($formData['property_city']));
-
-//         echo json_encode(array('success' => true));
-//     } else {
-//         echo json_encode(array('success' => false, 'error' => 'Failed to add property.'));
-//     }
-
-//     wp_die();
-// }
-////////////////////
-
 
 function get_property_types_options() {
     $property_types = get_terms(array(
         'taxonomy' => 'property_type',
-        'hide_empty' => false, // Retrieve even if terms have no posts
+        'hide_empty' => false, 
     ));
 
     $options = '';
@@ -302,7 +225,6 @@ add_action('wp_enqueue_scripts', 'add_custom_scripts');
 function add_custom_scripts() {
    wp_enqueue_script('custom-script', get_stylesheet_directory_uri() . "/dist/js/custom.js", array('jquery'), '1.0', true);
     
-    // Localize the script with new data
     $translation_array = array(
         'ajax_url' => admin_url('admin-ajax.php'),
     );
@@ -314,24 +236,24 @@ add_action('wp_ajax_nopriv_submit_post', 'submit_post_callback'); // Allow for n
 
 function submit_post_callback() {
     if (isset($_POST['title'])  && isset($_POST['area']) && isset($_POST['price']) && isset($_POST['address']) && isset($_POST['living_space']) && isset($_POST['floor'])) {
-        // Create new post
+        
         $new_post = array(
             'post_title'    => sanitize_text_field($_POST['title']),
             'post_status'   => 'publish',
             'post_type'     => 'property' // Changed post type to "property"
         );
 
-        // Insert the post into the database
+        
         $post_id = wp_insert_post($new_post);
 
-         // Update address and ACF fields
+        
         update_field('area', $_POST['area'], $post_id);
         update_field('price', $_POST['price'], $post_id);
         update_field('address', $_POST['address'], $post_id);
         update_field('living_space', $_POST['living_space'], $post_id);
         update_field('floor', $_POST['floor'], $post_id);
 
- // Set property type taxonomy
+
         $property_type = sanitize_text_field($_POST['property_type']);
         $term = get_term_by('slug', $property_type, 'property_type'); // Get term by name
         if ($term !== false && !is_wp_error($term)) {
@@ -341,7 +263,7 @@ function submit_post_callback() {
 
 
 
-        // Handle featured image upload
+       
         if (!empty($_FILES['featuredImage']['name'])) {
             $attachment_id = upload_featured_image($post_id);
             set_post_thumbnail($post_id, $attachment_id);

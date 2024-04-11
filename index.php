@@ -160,9 +160,14 @@ if($latest_properties->have_posts()){
         </div>
         <button type="submit" class="btn btn-primary">Добавить Недвижимость</button>
     </form>
+
+    <span class="loader"></span>
 </section>
 
-<div id="message"></div>
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-heading">Отлично, новый недвижимость добавлено!</h4>
+  <p>Вы можете добавить еще!!</p>
+</div>
 
 
  
